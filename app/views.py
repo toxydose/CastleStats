@@ -2,8 +2,9 @@ from flask import render_template
 from app import app
 from functools import wraps
 from flask import request, Response
-from config import AUTH_LOGIN, AUTH_PASS
 
+from config import AUTH_LOGIN, AUTH_PASS
+from app.types import *
 
 def check_auth(username, password):
     """This function is called to check if a username /
@@ -41,6 +42,32 @@ else:
     def index():
         return render_template("index.html")
 
+
 @app.route('/robots.txt')
 def robots():
     return render_template('robots.txt')
+
+
+def squads_display():
+    squads = Session().query(Squad).all()
+    all_squads = []
+    for squad in squads:
+        all_squads.append (squad.squad_name)
+    return all_squads
+
+def players_display():
+    players = Session().query(User).all()
+    all_users = []
+    for player in players:
+        all_users.append (player.username)
+    return all_users
+
+
+@app.route('/squads')
+def squads_function():
+    return render_template('squads.html',  output = squads_display())
+
+
+@app.route('/users')
+def users_function():
+    return render_template('users.html', output = players_display())
