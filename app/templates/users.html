@@ -22,10 +22,11 @@
         </div>
     </nav>
 <br>
-    <table border="1">
+    <table border="2">
+            <tr><td><b>Telegram username</b></td></tr>
   {% for v in output %}
       <tr>
-      <td><div>{{ v }}</div></td>
+      <td><div>@{{ v }}</div></td>
       </tr>
   {% endfor %}
     </table>

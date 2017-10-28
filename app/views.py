@@ -65,11 +65,11 @@ def players_display():
     return all_users
 
 
-@app.route('/squads')
+@app.route('/squads.html')
 def squads_function():
     return render_template('squads.html', output=squads_display())
 
 
-@app.route('/users')
+@app.route('/users.html')
 def users_function():
     return render_template('users.html', output=players_display())
