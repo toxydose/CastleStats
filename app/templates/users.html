@@ -22,9 +22,13 @@
         </div>
     </nav>
 <br>
-  {% for v in output %}
-    <div>{{ v }}</div>
-  {% endfor %}
+    <table border="1">
 
+  {% for v in output %}
+      <tr>
+      <td><div>{{ v }}</div></td>
+      </tr>
+  {% endfor %}
+    </table>
   </body>
 </html>

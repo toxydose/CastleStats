@@ -55,6 +55,7 @@ def squads_display():
         all_squads.append (squad.squad_name)
     return all_squads
 
+
 def players_display():
     players = Session().query(User).all()
     all_users = []
