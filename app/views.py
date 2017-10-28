@@ -6,6 +6,7 @@ from flask import request, Response
 from config import AUTH_LOGIN, AUTH_PASS
 from app.types import *
 
+
 def check_auth(username, password):
     """This function is called to check if a username /
     password combination is valid.
@@ -52,7 +53,7 @@ def squads_display():
     squads = Session().query(Squad).all()
     all_squads = []
     for squad in squads:
-        all_squads.append (squad.squad_name)
+        all_squads.append(squad.squad_name)
     return all_squads
 
 
@@ -60,15 +61,15 @@ def players_display():
     players = Session().query(User).all()
     all_users = []
     for player in players:
-        all_users.append (player.username)
+        all_users.append(player.username)
     return all_users
 
 
 @app.route('/squads')
 def squads_function():
-    return render_template('squads.html',  output = squads_display())
+    return render_template('squads.html', output=squads_display())
 
 
 @app.route('/users')
 def users_function():
-    return render_template('users.html', output = players_display())
+    return render_template('users.html', output=players_display())
