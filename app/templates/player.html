@@ -21,21 +21,5 @@
 
         </div>
     </nav>
-<br>
-    <table border="2">
-            <tr><td><b>Telegram username</b></td></tr>
 
-        {% set count = 0 %}
-        {% for user in output %}
-            <tr>
-      <td>
-          <div>
-          <a href="/player/{{ link[loop.index0] }}">@{{ user }}</a>
-              {% set count = count + 1 %}
-      </div>
-      </td>
-            </tr>
-  {% endfor %}
-    </table>
-  </body>
-</html>
+{{ output }}

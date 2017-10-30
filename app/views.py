@@ -1,4 +1,7 @@
+import flask
 from flask import render_template
+from sqlalchemy.exc import SQLAlchemyError
+
 from app import app
 from functools import wraps
 from flask import request, Response
@@ -49,27 +52,43 @@ def robots():
     return render_template('robots.txt')
 
 
-def squads_display():
-    squads = Session().query(Squad).all()
-    all_squads = []
-    for squad in squads:
-        all_squads.append(squad.squad_name)
-    return all_squads
+def get_squads():
+    try:
+        squads = Session().query(Squad).all()
+        all_squads = []
+        for squad in squads:
+            all_squads.append(squad.squad_name)
+        return all_squads
+    except SQLAlchemyError:
+        Session.rollback()
+        return flask.Response(status=400)
 
 
-def players_display():
-    players = Session().query(User).all()
-    all_users = []
-    for player in players:
-        all_users.append(player.username)
-    return all_users
+@app.route('/users.html')
+def get_usernames():
+    try:
+        players = Session().query(User).all()
+        all_users = []
+        all_id = []
+        for player in players:
+            all_users.append(player.username)
+            all_id.append(player.id)
+        return render_template('users.html', output=all_users, link=all_id)
+    except SQLAlchemyError:
+        Session.rollback()
+        return flask.Response(status=400)
+
+
+@app.route('/player/<int:id>', methods=['GET'])
+def get_user(id):
+    try:
+        user = Session().query(User).filter_by(id=id).first()
+        return render_template('player.html', output=user)
+    except SQLAlchemyError:
+        Session.rollback()
+        return flask.Response(status=400)
 
 
 @app.route('/squads.html')
 def squads_function():
-    return render_template('squads.html', output=squads_display())
-
-
-@app.route('/users.html')
-def users_function():
-    return render_template('users.html', output=players_display())
+    return render_template('squads.html', output=get_squads())
