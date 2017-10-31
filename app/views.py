@@ -9,6 +9,7 @@ from flask import request, Response
 from config import AUTH_LOGIN, AUTH_PASS
 from app.types import *
 
+MSG_UNDER_CONSTRUCTION = 'Страница находится в разработке'
 
 def check_auth(username, password):
     """This function is called to check if a username /
@@ -92,3 +93,23 @@ def get_user(id):
 @app.route('/squads.html')
 def squads_function():
     return render_template('squads.html', output=get_squads())
+
+
+@app.route('/top.html')
+def top():
+    return render_template('top.html', output=MSG_UNDER_CONSTRUCTION)
+
+
+@app.route('/build.html')
+def build():
+    return render_template('build.html', output=MSG_UNDER_CONSTRUCTION)
+
+
+@app.route('/reports.html')
+def reports():
+    return render_template('reports.html', output=MSG_UNDER_CONSTRUCTION)
+
+
+@app.route('/squad_craft.html')
+def squad_craft():
+    return render_template('squad_craft.html', output=MSG_UNDER_CONSTRUCTION)
