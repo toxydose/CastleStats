@@ -3,7 +3,6 @@ Flask==0.12.2
 itsdangerous==0.24
 Jinja2==2.9.6
 MarkupSafe==1.0
-pkg-resources==0.0.0
 PyMySQL==0.7.11
 SQLAlchemy==1.1.14
 Werkzeug==0.12.2
