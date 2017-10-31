@@ -65,7 +65,7 @@ def get_squads():
         return flask.Response(status=400)
 
 
-@app.route('/users.html')
+@app.route('/users')
 def get_usernames():
     try:
         players = Session().query(User).all()
@@ -90,26 +90,26 @@ def get_user(id):
         return flask.Response(status=400)
 
 
-@app.route('/squads.html')
+@app.route('/squads')
 def squads_function():
     return render_template('squads.html', output=get_squads())
 
 
-@app.route('/top.html')
+@app.route('/top')
 def top():
     return render_template('top.html', output=MSG_UNDER_CONSTRUCTION)
 
 
-@app.route('/build.html')
+@app.route('/build')
 def build():
     return render_template('build.html', output=MSG_UNDER_CONSTRUCTION)
 
 
-@app.route('/reports.html')
+@app.route('/reports')
 def reports():
     return render_template('reports.html', output=MSG_UNDER_CONSTRUCTION)
 
 
-@app.route('/squad_craft.html')
+@app.route('/squad_craft')
 def squad_craft():
     return render_template('squad_craft.html', output=MSG_UNDER_CONSTRUCTION)
