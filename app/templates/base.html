@@ -3,7 +3,7 @@
       <meta charset="utf-8">
       <title>DuskStats</title>
 
-      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <meta name="viewport" content="width=device-width, initial-scale=0.9">
 
       <!-- CDN BOOTSTRAP -->
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
@@ -11,6 +11,26 @@
       <!-- ------------- -->
   </head>
   <body style="background: #bfbfbf">
-{% block content %}{% endblock %}
+  <div>
+        <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <a class="navbar-brand" href="/"><b><font color="#7fffd4">ВСумраке</font></b></a>
+                </div>
+                <div>
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-addon" id="sizing-addon3">@</span>
+                        <input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon3">
+                    </div>
+                </div>
+                <div class="container">
+                    {% block buttons %}{% endblock %}
+                </div>
+            </div>
+        </nav>
+  <br>
+        {% block content %}{% endblock %}
+  </div>
+<br>
   </body>
 </html>
