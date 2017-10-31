@@ -1,18 +1,6 @@
-<html>
-  <head>
-      <meta charset="utf-8">
-      <title>DuskStats</title>
+{% extends "base.html" %}
+{% block content %}
 
-      <meta name="viewport" content="width=device-vidth, initial-scale=1">
-
-      <!-- CDN BOOTSTRAP -->
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-      <!-- ------------- -->
-
-  </head>
-
-  <body style="background: #bfbfbf">
   <div>
         <nav class="navbar navbar-expand-lg navbar-light bg-dark">
             <div class="container-fluid">
@@ -32,17 +20,9 @@
                 <a href="/squad_craft">
                     <button type="button" class="btn btn-primary" style= "width:110px;height:50px" >Крафт</button></a>
             </div>
-            <div class="row">
-                <div class="col-md-20">
-        <div class="input-group input-group-sm">
-  <span class="input-group-addon" id="sizing-addon3">@</span>
-  <input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon3">
-        </div>
-                    </div>
-                    </div>
-                </div>
+            </div>
         </nav>
-      </div>
+  </div>
 <br>
     <div class="container">
       <b>Отряды Сумрака</b>
@@ -57,5 +37,4 @@
   {% endfor %}
     </table>
     </div>
-  </body>
-</html>
+{% endblock %}
