@@ -69,12 +69,13 @@ def get_squads():
 def get_usernames():
     try:
         players = Session().query(User).all()
+        players_count = Session().query(User).filter_by(id=User.id).count()
         all_users = []
         all_id = []
         for player in players:
             all_users.append(player.username)
             all_id.append(player.id)
-        return render_template('users.html', output=all_users, link=all_id)
+        return render_template('users.html', output=all_users, link=all_id, count=players_count)
     except SQLAlchemyError:
         Session.rollback()
         return flask.Response(status=400)
