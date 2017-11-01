@@ -18,8 +18,15 @@
       <b>Игроки Сумрака</b>
       <div>Всего записей в боте: <b>{{ count }}</b></div>
   <br>
-    <table border="2">
-            <tr><td><b>Ник в игре</b></td></tr>
+    <table border="2" class="table">
+    <thead>
+    <tr>
+        <th>Ник в игре</th>
+        <th>Имя в Telegram</th>
+        <th>Telegram Username</th>
+    </tr>
+    </thead>
+    <tbody>
         {% set count = 0 %}
         {% for user in output %}
             <tr>
@@ -28,9 +35,14 @@
           <a href="/player/{{ link[loop.index0] }}">{{ user }}</a>
               {% set count = count + 1 %}
       </div>
+           <td>-
+            </td>
+                <td>@
+                </td>
       </td>
             </tr>
   {% endfor %}
+    </tbody>
     </table>
   </div>
 {% endblock %}

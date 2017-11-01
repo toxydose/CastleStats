@@ -92,8 +92,9 @@ def get_usernames():
 
 @app.route('/player/<int:id>', methods=['GET'])
 def get_user(id):
+    session = Session()
     try:
-        user = Session().query(User).filter_by(id=id).first()
+        user = session.query(User).filter_by(id=id).first()
         return render_template('player.html', output=user)
     except SQLAlchemyError:
         Session.rollback()
