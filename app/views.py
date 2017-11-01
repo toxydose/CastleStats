@@ -81,10 +81,18 @@ def get_usernames():
         characters = characters.all()
         all_users = []
         all_id = []
+        all_names = []
+        all_usernames = []
         for player in characters:
+            user_id = player.user_id
+            name = session.query(User).filter_by(id=user_id).first()
+            username = session.query(User).filter_by(id=user_id).first()
             all_users.append(player.name)
-            all_id.append(player.user_id)
-        return render_template('users.html', output=all_users, link=all_id, count=players_count)
+            all_id.append(user_id)
+            all_names.append(name)
+            all_usernames.append(username.username)
+        return render_template('users.html', output=all_users, link=all_id, count=players_count, names=all_names,
+                               usernames=all_usernames)
     except SQLAlchemyError:
         Session.rollback()
         return flask.Response(status=400)
