@@ -19,13 +19,13 @@
       <div>Всего записей в боте: <b>{{ count }}</b></div>
   <br>
     <table border="2">
-            <tr><td><b>Telegram username</b></td></tr>
+            <tr><td><b>Ник в игре</b></td></tr>
         {% set count = 0 %}
         {% for user in output %}
             <tr>
       <td>
           <div>
-          <a href="/player/{{ link[loop.index0] }}">@{{ user }}</a>
+          <a href="/player/{{ link[loop.index0] }}">{{ user }}</a>
               {% set count = count + 1 %}
       </div>
       </td>

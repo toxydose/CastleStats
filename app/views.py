@@ -1,15 +1,17 @@
 import flask
 from flask import render_template
+from sqlalchemy import func, tuple_
 from sqlalchemy.exc import SQLAlchemyError
 
 from app import app
 from functools import wraps
 from flask import request, Response
 
-from config import AUTH_LOGIN, AUTH_PASS
+from config import AUTH_LOGIN, AUTH_PASS, CASTLE
 from app.types import *
 
 MSG_UNDER_CONSTRUCTION = 'Страница находится в разработке'
+
 
 def check_auth(username, password):
     """This function is called to check if a username /
@@ -68,13 +70,20 @@ def get_squads():
 @app.route('/users')
 def get_usernames():
     try:
-        players = Session().query(User).all()
-        players_count = Session().query(User).filter_by(id=User.id).count()
+        session = Session()
+        actual_profiles = session.query(Character.user_id, func.max(Character.date)).group_by(Character.user_id)
+        profiles = actual_profiles.all()
+        players_count = len(profiles)
+        characters = session.query(Character).filter(tuple_(Character.user_id, Character.date)
+                                                     .in_([(a[0], a[1]) for a in profiles]))
+        if CASTLE:
+            characters = characters.filter_by(castle=CASTLE)
+        characters = characters.all()
         all_users = []
         all_id = []
-        for player in players:
-            all_users.append(player.username)
-            all_id.append(player.id)
+        for player in characters:
+            all_users.append(player.name)
+            all_id.append(player.user_id)
         return render_template('users.html', output=all_users, link=all_id, count=players_count)
     except SQLAlchemyError:
         Session.rollback()
