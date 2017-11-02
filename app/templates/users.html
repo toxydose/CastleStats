@@ -14,39 +14,34 @@
 {% endblock %}
 
 {% block content %}
-  <div class="container">
-      <b>Игроки Сумрака</b>
-      <div>Всего записей в боте: <b>{{ count }}</b></div>
-  <br>
-  <div class="container-fluid">
-  <div class="table-responsive">
-    <table border="2"class="table table-hover">
-    <thead>
-    <tr>
-        <th>Ник в игре</th>
-        <th>Имя в Telegram</th>
-        <th>Telegram Username</th>
-    </tr>
-    </thead>
-    <tbody>
-        {% set count = 0 %}
-        {% for user in output %}
-            <tr>
-      <td>
-          <div>
-          <a href="/player/{{ link[loop.index0] }}">{{ user }}</a>
-      </div>
-           <td>{{ names[loop.index0]}}
-            </td>
-                <td>@{{ usernames[loop.index0] }}
-                </td>
-      </td>
-            </tr>
-  {% set count = count + 1 %}
-  {% endfor %}
-    </tbody>
-    </table>
-  </div>
-  </div>
-  </div>
+    <div class="container">
+        <b>Игроки Сумрака</b>
+        <div>Всего записей в боте: <b>{{ characters|length }}</b></div>
+        <br>
+        <div class="container-fluid">
+            <div class="table-responsive">
+                <table border="2" class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Ник в игре</th>
+                        <th>Имя в Telegram</th>
+                        <th>Telegram Username</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for character, user in characters %}
+                        <tr>
+                            <td>
+                                <div>
+                                    <a href="/player/{{ user.id }}">{{ character.name }}</a>
+                                </div>
+                            <td>{{ user }}</td>
+                            <td>@{{ user.username }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
 {% endblock %}
