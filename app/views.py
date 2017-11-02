@@ -74,8 +74,9 @@ def get_usernames():
         actual_profiles = session.query(Character.user_id, func.max(Character.date)).group_by(Character.user_id)
         profiles = actual_profiles.all()
         players_count = len(profiles)
-        characters = session.query(Character).filter(tuple_(Character.user_id, Character.date)
-                                                     .in_([(a[0], a[1]) for a in profiles]))
+        characters = session.query(Character, User).filter(tuple_(Character.user_id, Character.date)
+                                                           .in_([(a[0], a[1]) for a in profiles]))\
+            .join(User, User.id == Character.user_id)
         if CASTLE:
             characters = characters.filter_by(castle=CASTLE)
         characters = characters.all()
@@ -83,13 +84,11 @@ def get_usernames():
         all_id = []
         all_names = []
         all_usernames = []
-        for player in characters:
-            user_id = player.user_id
-            name = session.query(User).filter_by(id=user_id).first()
-            all_users.append(player.name)
-            all_id.append(user_id)
-            all_names.append(name)
-            all_usernames.append(name.username)
+        for character, user in characters:
+            all_users.append(character.name)
+            all_id.append(user.id)
+            all_names.append(str(user))
+            all_usernames.append(user.username)
         return render_template('users.html', output=all_users, link=all_id, count=players_count, names=all_names,
                                usernames=all_usernames)
     except SQLAlchemyError:
