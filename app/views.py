@@ -77,7 +77,7 @@ def get_usernames():
                                                            .in_([(a[0], a[1]) for a in profiles]))\
             .join(User, User.id == Character.user_id)
         if CASTLE:
-            characters = characters.filter_by(castle=CASTLE)
+            characters = characters.filter(Character.castle == CASTLE)
         characters = characters.all()
         return render_template('users.html', characters=characters)
     except SQLAlchemyError:
