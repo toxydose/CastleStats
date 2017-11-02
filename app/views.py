@@ -73,24 +73,13 @@ def get_usernames():
         session = Session()
         actual_profiles = session.query(Character.user_id, func.max(Character.date)).group_by(Character.user_id)
         profiles = actual_profiles.all()
-        players_count = len(profiles)
         characters = session.query(Character, User).filter(tuple_(Character.user_id, Character.date)
                                                            .in_([(a[0], a[1]) for a in profiles]))\
             .join(User, User.id == Character.user_id)
         if CASTLE:
             characters = characters.filter_by(castle=CASTLE)
         characters = characters.all()
-        all_users = []
-        all_id = []
-        all_names = []
-        all_usernames = []
-        for character, user in characters:
-            all_users.append(character.name)
-            all_id.append(user.id)
-            all_names.append(str(user))
-            all_usernames.append(user.username)
-        return render_template('users.html', output=all_users, link=all_id, count=players_count, names=all_names,
-                               usernames=all_usernames)
+        return render_template('users.html', characters=characters)
     except SQLAlchemyError:
         Session.rollback()
         return flask.Response(status=400)
