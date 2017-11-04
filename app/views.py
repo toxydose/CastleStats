@@ -58,10 +58,10 @@ def robots():
 def get_squads():
     try:
         squads = Session().query(Squad).all()
-        all_squads = []
-        for squad in squads:
-            all_squads.append(squad.squad_name)
-        return all_squads
+        # all_squads = []
+        # for squad in squads:
+        #     all_squads.append(squad.squad_name)
+        return squads
     except SQLAlchemyError:
         Session.rollback()
         return flask.Response(status=400)
@@ -71,11 +71,11 @@ def get_squads():
 def get_usernames():
     try:
         session = Session()
-        actual_profiles = session.query(Character.user_id, func.max(Character.date)).group_by(Character.user_id)
-        profiles = actual_profiles.all()
+        sub_query = session.query(Character.user_id, func.max(Character.date)).group_by(Character.user_id).subquery()
         characters = session.query(Character, User).filter(tuple_(Character.user_id, Character.date)
-                                                           .in_([(a[0], a[1]) for a in profiles]))\
+                                                           .in_(sub_query))\
             .join(User, User.id == Character.user_id)
+
         if CASTLE:
             characters = characters.filter(Character.castle == CASTLE)
         characters = characters.all()
@@ -91,6 +91,78 @@ def get_user(id):
     try:
         user = session.query(User).filter_by(id=id).first()
         return render_template('player.html', output=user)
+    except SQLAlchemyError:
+        Session.rollback()
+        return flask.Response(status=400)
+
+
+stuff = {'pri': ['Эльфийское копье', 'Эльфийский меч', 'Рапира',
+                 'Кузнечный молот', 'Кирка шахтера', 'Костолом', 'Молот гномов',
+                 'Меч берсеркера', 'Экскалибур', 'Нарсил',
+                 'Хранитель', 'Трезубец', 'Алебарда'],
+         'sec': ['Мифриловый щит',
+                 'Клещи',
+                 'Кинжал охотника', 'Кинжал демона', 'Кинжал триумфа',
+                 'Щит хранителя', 'Щит паладина', 'Щит крестоносца',
+                 'Кинжал'],
+         'head': ['Мифриловый шлем',
+                  'Шапка охотника', 'Шапка демона', 'Шапка триумфа',
+                  'Шлем хранителя', 'Шлем паладина', 'Шлем крестоносца'],
+         'arms': ['Мифриловые перчатки',
+                  'Рукавицы',
+                  'Браслеты охотника', 'Браслеты демона', 'Браслеты триумфа',
+                  'Перчатки хранителя', 'Перчатки паладина', 'Перчатки крестоносца'],
+         'armor': ['Мифриловая броня',
+                   'Кузнечная роба',
+                   'Куртка охотника', 'Куртка демона', 'Куртка триумфа',
+                   'Броня хранителя', 'Броня паладина', 'Броня крестоносца'],
+         'legs': ['Мифриловые сапоги',
+                  'Ботинки охотника', 'Ботинки демона', 'Ботинки триумфа',
+                  'Сапоги хранителя', 'Сапоги паладина', 'Сапоги крестоносца']
+         }
+
+equip_parts = ['pri', 'sec', 'head', 'arms', 'armor', 'legs']
+
+
+@app.route('/member-equip/<int:squad_id>', methods=['GET'])
+def get_member_equip(squad_id):
+    session = Session()
+    try:
+        sub_query_1 = session.query(Character.user_id, func.max(Character.date)).group_by(Character.user_id).subquery()
+        sub_query_2 = session.query(Equip.user_id, func.max(Equip.date)).group_by(Equip.user_id).subquery()
+        members = session.query(Character, User, Equip.equip) \
+            .filter(tuple_(Character.user_id, Character.date).in_(sub_query_1)) \
+            .join(User, User.id == Character.user_id) \
+            .outerjoin(Equip, User.id == Equip.user_id) \
+            .join(SquadMember, SquadMember.user_id == Character.user_id) \
+            .filter((tuple_(Equip.user_id, Equip.date).in_(sub_query_2)) | (Equip.user_id.is_(None))) \
+            .filter(SquadMember.squad_id == squad_id) \
+            .order_by(Character.level.desc())
+
+        if CASTLE:
+            members = members.filter(Character.castle == CASTLE)
+        members = members.all()
+
+        members_new = []
+        for character, user, equip in members:
+            member_equip = []
+            if equip:
+                for part in equip_parts:
+                    flag = False
+                    for item in stuff[part]:
+                        if item in equip:
+                            member_equip.append(item)
+                            flag = True
+                            break
+                    if not flag:
+                        member_equip.append(' ')
+            else:
+                member_equip = [' ', ' ', ' ', ' ', ' ', ' ']
+            members_new.append([character, user, member_equip])
+
+        squad = session.query(Squad).filter(Squad.chat_id == squad_id)
+        squad = squad.first()
+        return render_template('squad_member_equip.html', members=members_new, squad=squad)
     except SQLAlchemyError:
         Session.rollback()
         return flask.Response(status=400)
