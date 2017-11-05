@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block buttons %}
+                <a href="/squads">
+                    <button type="button" class="btn btn-primary" style="width:110px;height:50px">Отряды</button></a>
+                <a href="/users">
+                    <button type="button" class="btn btn-primary" style="width:110px;height:50px">Игроки</button></a>
+                <a href="/reports">
+                    <button type="button" class="btn btn-primary" style="width:110px;height:50px">Репорты</button></a>
+                <a href="/build">
+                    <button type="button" class="btn btn-primary" style="width:110px;height:50px">Стройка</button></a>
+                <a href="/top">
+                    <button type="button" class="btn btn-primary" style="width:110px;height:50px">Топы</button></a>
+                <a href="/squad_craft">
+                    <button type="button" class="btn btn-primary" style="width:110px;height:50px">Крафт</button></a>
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <b>Отряд: {{ squad.squad_name }}</b>
+        <div>Всего игроков в отряде: <b>{{ members|length }}</b></div>
+        <br>
+        <div class="container-fluid">
+            <div class="table-responsive">
+                <table border="2" class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Username</th>
+                        <th>Ник в игре</th>
+                        <th>Lvl</th>
+                        <th>Dmg</th>
+                        <th>Def</th>
+                        <th>Pri</th>
+                        <th>Sec</th>
+                        <th>Head</th>
+                        <th>Arms</th>
+                        <th>Armor</th>
+                        <th>Legs</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for character, user, equip in members %}
+                        <tr>
+                            <td>@{{user.username}}</td>
+                            <td>{{ user }}</td>
+                            <td>{{ character.level }}</td>
+                            <td>{{ character.attack }}</td>
+                            <td>{{ character.defence }}</td>
+                            <td>{{ equip[0] }}</td>
+                            <td>{{ equip[1] }}</td>
+                            <td>{{ equip[2] }}</td>
+                            <td>{{ equip[3] }}</td>
+                            <td>{{ equip[4] }}</td>
+                            <td>{{ equip[5] }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
