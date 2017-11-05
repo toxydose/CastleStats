@@ -40,7 +40,7 @@
                     <tbody>
                     {% for character, user, equip in members %}
                         <tr>
-                            <td>@{{user.username}}</td>
+                            <td><a href="/player/{{ user.id }}">@{{ user.username }}</a></td>
                             <td>{{ character.name }}</td>
                             <td>{{ character.level }}</td>
                             <td>{{ character.attack }}</td>
