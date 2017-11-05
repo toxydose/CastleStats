@@ -39,15 +39,9 @@ def requires_auth(f):
     return decorated
 
 
-if AUTH_PASS and AUTH_LOGIN:
-    @app.route('/')
-    @requires_auth
-    def index():
-        return render_template("index.html")
-else:
-    @app.route('/')
-    def index():
-        return render_template("index.html")
+@app.route('/')
+def index():
+    return render_template("index.html")
 
 
 @app.route('/robots.txt')
@@ -125,6 +119,7 @@ equip_parts = ['pri', 'sec', 'head', 'arms', 'armor', 'legs']
 
 
 @app.route('/member-equip/<int:squad_id>', methods=['GET'])
+@requires_auth
 def get_member_equip(squad_id):
     session = Session()
     try:
