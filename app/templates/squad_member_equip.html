@@ -15,7 +15,7 @@
 {% endblock %}
 
 {% block content %}
-    <div class="container">
+    <div class="container-fluid">
         <b>Отряд: {{ squad.squad_name }}</b>
         <div>Всего игроков в отряде: <b>{{ members|length }}</b></div>
         <br>
@@ -41,7 +41,7 @@
                     {% for character, user, equip in members %}
                         <tr>
                             <td>@{{user.username}}</td>
-                            <td>{{ user }}</td>
+                            <td>{{ character.name }}</td>
                             <td>{{ character.level }}</td>
                             <td>{{ character.attack }}</td>
                             <td>{{ character.defence }}</td>
