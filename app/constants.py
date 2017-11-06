@@ -52,10 +52,10 @@ STUFF = {'pri': [
 EQUIP_PARTS = ['pri', 'sec', 'head', 'arms', 'armor', 'legs']
 
 COLORS = {'grade0': None,
-          'grade1': 'e81224',   # red
-          'grade2': '16c60c',   # green
-          'grade3': '3a96dd',   # blue
-          'grade4': 'f7630c'    # orange
+          'grade1': 'e0ffff',
+          'grade2': 'f5cbcc',
+          'grade3': 'fbe5cc',
+          'grade4': 'd5ebd5'
           }
 
 MSG_UNDER_CONSTRUCTION = 'Страница находится в разработке'
