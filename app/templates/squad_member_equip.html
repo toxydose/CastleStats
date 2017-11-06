@@ -45,12 +45,13 @@
                             <td>{{ character.level }}</td>
                             <td>{{ character.attack }}</td>
                             <td>{{ character.defence }}</td>
-                            <td>{{ equip[0] }}</td>
-                            <td>{{ equip[1] }}</td>
-                            <td>{{ equip[2] }}</td>
-                            <td>{{ equip[3] }}</td>
-                            <td>{{ equip[4] }}</td>
-                            <td>{{ equip[5] }}</td>
+                            {% for item, color in equip %}
+                                {% if color %}
+                                    <td bgcolor="{{ color }}">{{ item }}</td>
+                                {% else %}
+                                    <td>{{ item }}</td>
+                                {% endif %}
+                            {% endfor %}
                         </tr>
                     {% endfor %}
                     </tbody>
