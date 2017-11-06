@@ -57,3 +57,5 @@ COLORS = {'grade0': None,
           'grade3': '3a96dd',   # blue
           'grade4': 'f7630c'    # orange
           }
+
+MSG_UNDER_CONSTRUCTION = 'Страница находится в разработке'

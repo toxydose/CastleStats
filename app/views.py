@@ -11,8 +11,6 @@ from app.constants import *
 from config import AUTH_LOGIN, AUTH_PASS, CASTLE
 from app.types import *
 
-MSG_UNDER_CONSTRUCTION = 'Страница находится в разработке'
-
 
 def check_auth(username, password):
     """This function is called to check if a username /
