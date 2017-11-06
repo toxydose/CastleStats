@@ -7,6 +7,7 @@ from app import app
 from functools import wraps
 from flask import request, Response
 
+from app.constants import *
 from config import AUTH_LOGIN, AUTH_PASS, CASTLE
 from app.types import *
 
@@ -87,67 +88,6 @@ def get_user(id):
         return flask.Response(status=400)
 
 
-stuff = {'pri': [
-                 ['Меч Ученика', 'grade0'], ['Короткий меч', 'grade0'], ['Длинный меч', 'grade0'],
-                 ['Меч Вдовы', 'grade0'], ['Меч Рыцаря', 'grade0'],
-                 ['Короткое копье', 'grade0'], ['Длинное копье', 'grade0'],
-                 ['Эльфийское копье', 'grade1'], ['Эльфийский меч', 'grade1'], ['Рапира', 'grade1'],
-                 ['Кирка шахтера', 'grade2'], ['Кузнечный молот', 'grade3'],
-                 ['Молот гномов', 'grade3'], ['Костолом', 'grade4'],
-                 ['Меч берсеркера', 'grade2'], ['Экскалибур', 'grade3'], ['Нарсил', 'grade4'],
-                 ['Хранитель', 'grade2'], ['Трезубец', 'grade3'], ['Алебарда', 'grade4']
-                ],
-         'sec': [
-                 ['Кухонный нож', 'grade0'], ['Боевой нож', 'grade0'],
-                 ['Деревянный щит ', 'grade0'], ['Щит скелета', 'grade0'],
-                 ['Бронзовый щит', 'grade0'], ['Серебряный щит', 'grade0'],
-                 ['Мифриловый щит', 'grade1'],
-                 ['Клещи', 'grade3'],
-                 ['Кинжал охотника', 'grade2'], ['Кинжал демона', 'grade3'], ['Кинжал триумфа', 'grade4'],
-                 ['Щит хранителя', 'grade2'], ['Щит паладина', 'grade3'], ['Щит крестоносца', 'grade4'],
-                 ['Кинжал', 'grade1']
-                ],
-         'head': [
-                  ['Шляпа', 'grade0'], ['Стальной шлем', 'grade0'], ['Серебряный шлем', 'grade0'],
-                  ['Мифриловый шлем', 'grade1'],
-                  ['Шапка охотника', 'grade2'], ['Шапка демона', 'grade3'], ['Шапка триумфа', 'grade4'],
-                  ['Шлем хранителя', 'grade2'], ['Шлем паладина', 'grade3'], ['Шлем крестоносца', 'grade4']
-                 ],
-         'arms': [
-                  ['Кожаные перчатки', 'grade0'], ['Стальные перчатки', 'grade0'],
-                  ['Серебряные перчатки', 'grade0'],
-                  ['Мифриловые перчатки', 'grade1'],
-                  ['Рукавицы', 'grade3'],
-                  ['Браслеты охотника', 'grade2'], ['Браслеты демона', 'grade3'], ['Браслеты триумфа', 'grade4'],
-                  ['Перчатки хранителя', 'grade2'], ['Перчатки паладина', 'grade3'], ['Перчатки крестоносца', 'grade4'],
-                  ['Браслеты', 'grade0'],
-                 ],
-         'armor': [
-                   ['Плотная куртка', 'grade0'], ['Кожаный доспех', 'grade0'], ['Стальная броня', 'grade0'],
-                   ['Мифриловая броня', 'grade1'],
-                   ['Кузнечная роба', 'grade3'],
-                   ['Куртка охотника', 'grade2'], ['Куртка демона', 'grade3'], ['Куртка триумфа', 'grade4'],
-                   ['Броня хранителя', 'grade2'], ['Броня паладина', 'grade3'], ['Броня крестоносца', 'grade4']
-                  ],
-         'legs': [
-                  ['Сандалии', 'grade0'], ['Кожаные сапоги', 'grade0'], ['Стальные сапоги', 'grade0'],
-                  ['Серебряные сапоги', 'grade0'],
-                  ['Мифриловые сапоги', 'grade1'],
-                  ['Ботинки охотника', 'grade2'], ['Ботинки демона', 'grade3'], ['Ботинки триумфа', 'grade4'],
-                  ['Сапоги хранителя', 'grade2'], ['Сапоги паладина', 'grade3'], ['Сапоги крестоносца', 'grade4']
-                 ]
-         }
-
-equip_parts = ['pri', 'sec', 'head', 'arms', 'armor', 'legs']
-
-colors = {'grade0': None,
-          'grade1': 'e81224',   # red
-          'grade2': '16c60c',   # green
-          'grade3': '3a96dd',   # blue
-          'grade4': 'f7630c'    # orange
-          }
-
-
 @app.route('/member-equip/<int:squad_id>', methods=['GET'])
 @requires_auth
 def get_member_equip(squad_id):
@@ -172,11 +112,11 @@ def get_member_equip(squad_id):
         for character, user, equip in members:
             member_equip = []
             if equip:
-                for part in equip_parts:
+                for part in EQUIP_PARTS:
                     flag = False
-                    for item, grade in stuff[part]:
+                    for item, grade in STUFF[part]:
                         if item in equip:
-                            member_equip.append([item, colors[grade]])
+                            member_equip.append([item, COLORS[grade]])
                             flag = True
                             break
                     if not flag:
