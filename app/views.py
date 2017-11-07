@@ -131,7 +131,7 @@ def get_member_equip(squad_id):
         avg_lvl = total_lvl/len(members)
         squad = session.query(Squad).filter(Squad.chat_id == squad_id)
         squad = squad.first()
-        return render_template('squad_member_equip.html', members=members_new, squad=squad, avg_lvl=avg_lvl,
+        return render_template('squad_member_equip.html', members=members_new, squad=squad, avg_lvl=round(avg_lvl,1),
                                total_attack=total_attack, total_defence=total_defence)
     except SQLAlchemyError:
         Session.rollback()
