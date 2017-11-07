@@ -17,29 +17,24 @@
 {% block content %}
     <div class="container-fluid">
         <b>Отряд: {{ squad.squad_name }}</b>
-        <div>Всего игроков: <b>{{ members|length }} </b><br>Ср. уровень: <b>{{ avg_lvl }}</b><br> Атака: <b>{{ total_attack }}</b><br>
-            Защита: <b>{{ total_defence }}</b><br>
-             </div>
+        <div>Всего игроков в отряде: <b>{{ members|length }}</b></div>
         <br>
         <div class="container-fluid">
             <div class="table-responsive">
                 <table border="2" class="table table-hover">
                     <thead>
                     <tr>
-                        <th>Юзернейм</th>
+                        <th>Username</th>
                         <th>Ник в игре</th>
-                        <th>Лвл</th>
-                        <th>Класс</th>
-                        <th>Атк</th>
-                        <th>Зщт</th>
-                        <th>Пр. рука</th>
-                        <th>Л. рука</th>
-                        <th>Шлем</th>
-                        <th>Перчатки</th>
-                        <th>Броня</th>
-                        <th>Сапоги</th>
-                        <th>Питомец</th>
-                        <th>Примечания</th>
+                        <th>Lvl</th>
+                        <th>Dmg</th>
+                        <th>Def</th>
+                        <th>Pri</th>
+                        <th>Sec</th>
+                        <th>Head</th>
+                        <th>Arms</th>
+                        <th>Armor</th>
+                        <th>Legs</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -48,7 +43,6 @@
                             <td><a href="/player/{{ user.id }}">@{{ user.username }}</a></td>
                             <td>{{ character.name }}</td>
                             <td>{{ character.level }}</td>
-                            <td>{{ character.prof }}</td>
                             <td>{{ character.attack }}</td>
                             <td>{{ character.defence }}</td>
                             {% for item, color in equip %}
@@ -58,8 +52,6 @@
                                     <td>{{ item }}</td>
                                 {% endif %}
                             {% endfor %}
-                            <td></td>
-                            <td></td>
                         </tr>
                     {% endfor %}
                     </tbody>
