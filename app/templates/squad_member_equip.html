@@ -58,7 +58,11 @@
                                     <td>{{ item }}</td>
                                 {% endif %}
                             {% endfor %}
-                            <td></td>
+                            {% if character.pet %}
+                                <td>{{ character.pet }} : {{ character.petLevel }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
                             <td></td>
                         </tr>
                     {% endfor %}
