@@ -119,15 +119,19 @@ def get_member_equip(squad_id):
             if equip:
                 for part in EQUIP_PARTS:
                     flag = False
-                    for item, grade in STUFF[part]:
+                    for item, grade, alias in STUFF[part]:
                         if item in equip:
-                            member_equip.append([item, COLORS[grade]])
+                            if alias:
+                                member_equip.append([alias, COLORS[grade]])
+                            else:
+                                member_equip.append([item, COLORS[grade]])
                             flag = True
                             break
                     if not flag:
                         member_equip.append([' ', None])
             else:
-                member_equip = [[' ', None], [' ', None], [' ', None], [' ', None], [' ', None], [' ', None]]
+                member_equip = [[' ', None], [' ', None], [' ', None], [' ', None],
+                                [' ', None], [' ', None], [' ', None]]
             members_new.append([character, user, member_equip])
         if len(members) > 0:
             avg_lvl = total_lvl/len(members)
