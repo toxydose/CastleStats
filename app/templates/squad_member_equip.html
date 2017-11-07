@@ -17,8 +17,8 @@
 {% block content %}
     <div class="container-fluid">
         <b>Отряд: {{ squad.squad_name }}</b>
-        <div>Всего игроков: <b>{{ members|length }} </b><br>Ср. уровень: <b>n/a</b><br> Атака: <b>n/a</b><br>
-            Защита: <b>n/a</b><br>
+        <div>Всего игроков: <b>{{ members|length }} </b><br>Ср. уровень: <b>{{ avg_lvl }}</b><br> Атака: <b>{{ total_attack }}</b><br>
+            Защита: <b>{{ total_defence }}</b><br>
              </div>
         <br>
         <div class="container-fluid">

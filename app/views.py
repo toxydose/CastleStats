@@ -107,8 +107,14 @@ def get_member_equip(squad_id):
         members = members.all()
 
         members_new = []
+        total_attack = 0
+        total_defence = 0
+        total_lvl = 0
         for character, user, equip in members:
             member_equip = []
+            total_attack += character.attack
+            total_defence += character.defence
+            total_lvl += character.level
             if equip:
                 for part in EQUIP_PARTS:
                     flag = False
@@ -122,10 +128,11 @@ def get_member_equip(squad_id):
             else:
                 member_equip = [[' ', None], [' ', None], [' ', None], [' ', None], [' ', None], [' ', None]]
             members_new.append([character, user, member_equip])
-
+        avg_lvl = total_lvl/len(members)
         squad = session.query(Squad).filter(Squad.chat_id == squad_id)
         squad = squad.first()
-        return render_template('squad_member_equip.html', members=members_new, squad=squad)
+        return render_template('squad_member_equip.html', members=members_new, squad=squad, avg_lvl=avg_lvl,
+                               total_attack=total_attack, total_defence=total_defence)
     except SQLAlchemyError:
         Session.rollback()
         return flask.Response(status=400)
