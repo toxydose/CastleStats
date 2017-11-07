@@ -129,7 +129,10 @@ def get_member_equip(squad_id):
             else:
                 member_equip = [[' ', None], [' ', None], [' ', None], [' ', None], [' ', None], [' ', None]]
             members_new.append([character, user, member_equip])
-        avg_lvl = total_lvl/len(members)
+        if len(members) > 0:
+            avg_lvl = total_lvl/len(members)
+        else:
+            avg_lvl = 0
         squad = session.query(Squad).filter(Squad.chat_id == squad_id)
         squad = squad.first()
         return render_template('squad_member_equip.html', members=members_new, squad=squad, avg_lvl=round(avg_lvl, 1),
