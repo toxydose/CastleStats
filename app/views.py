@@ -11,6 +11,8 @@ from app.constants import *
 from config import AUTH_LOGIN, AUTH_PASS, CASTLE
 from app.types import *
 
+from datetime import datetime, timedelta
+
 
 def check_auth(username, password):
     """This function is called to check if a username /
@@ -110,7 +112,6 @@ def get_member_equip(squad_id):
         total_attack = 0
         total_defence = 0
         total_lvl = 0
-
         for character, user, equip in members:
             member_equip = []
             total_attack += character.attack
@@ -132,7 +133,13 @@ def get_member_equip(squad_id):
             else:
                 member_equip = [[' ', None], [' ', None], [' ', None], [' ', None],
                                 [' ', None], [' ', None], [' ', None]]
-            members_new.append([character, user, member_equip])
+
+            if character.date > (datetime.now() - timedelta(days=7)):
+                fresh = PROFILE_FRESH
+            else:
+                fresh = PROFILE_NOT_FRESH
+            members_new.append([character, user, member_equip, fresh])
+
         if len(members) > 0:
             avg_lvl = total_lvl/len(members)
         else:

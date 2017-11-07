@@ -70,4 +70,6 @@ COLORS = {'color_off': None,
           'grade4': 'd5ebd5'
           }
 
+PROFILE_FRESH = '✓'
+PROFILE_NOT_FRESH = '✖'
 MSG_UNDER_CONSTRUCTION = 'Страница находится в разработке'
