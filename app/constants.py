@@ -54,13 +54,13 @@ STUFF = {'pri': [
                   ['Сапоги хранителя', 'grade2', None], ['Сапоги паладина', 'grade3', None],
                   ['Сапоги крестоносца', 'grade4', None]
                  ],
-         'bottle': [
-                    ['Фляга', 'color_off', '+1 🔋'], ['Бутылка рома', 'color_off', '+2 🔋'],
-                    ['Бутылка', 'color_off', '+1 🔋']
+         'special': [
+                    ['Фляга', 'color_off', '+1🔋'], ['Бутылка рома', 'color_off', '+2🔋'],
+                    ['Бутылка', 'color_off', '+1🔋'], ['+1🍀', 'color_off', '+1🍀']
                    ]
          }
 
-EQUIP_PARTS = ['pri', 'sec', 'head', 'arms', 'armor', 'legs', 'bottle']
+EQUIP_PARTS = ['pri', 'sec', 'head', 'arms', 'armor', 'legs', 'special']
 
 COLORS = {'color_off': None,
           'grade0': None,
