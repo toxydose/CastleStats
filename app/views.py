@@ -118,15 +118,20 @@ def get_member_equip(squad_id):
             total_defence += character.defence
             total_lvl += character.level
             if equip:
+                equip_lines = equip.split('\n')
                 for part in EQUIP_PARTS:
                     flag = False
                     for item, grade, alias in STUFF[part]:
-                        if item in equip:
-                            if alias:
-                                member_equip.append([alias, COLORS[grade]])
-                            else:
-                                member_equip.append([item, COLORS[grade]])
-                            flag = True
+                        for line in equip_lines:
+                            if item in line:
+                                mod_str = line.split(item)[0]
+                                if alias:
+                                    member_equip.append([mod_str + alias, COLORS[grade]])
+                                else:
+                                    member_equip.append([mod_str + item, COLORS[grade]])
+                                flag = True
+                                break
+                        if flag:
                             break
                     if not flag:
                         member_equip.append([' ', None])
