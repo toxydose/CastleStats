@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block buttons %}
+                <a href="/squads">
+                    <button type="button" class="btn btn-primary" style="width:110px;height:50px">Отряды</button></a>
+                <a href="/users">
+                    <button type="button" class="btn btn-primary" style="width:110px;height:50px">Игроки</button></a>
+                <a href="/reports">
+                    <button type="button" class="btn btn-primary" style="width:110px;height:50px">Репорты</button></a>
+                <a href="/build">
+                    <button type="button" class="btn btn-primary" style="width:110px;height:50px">Стройка</button></a>
+                <a href="/top">
+                    <button type="button" class="btn btn-primary" style="width:110px;height:50px">Топы</button></a>
+                <a href="/squad_craft">
+                    <button type="button" class="btn btn-primary" style="width:110px;height:50px">Крафт</button></a>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <b>Отряд: {{ squad.squad_name }}</b>
+        <div>Всего игроков: <b>{{ members|length }} </b><br>Ср. уровень: <b>{{ avg_lvl }}</b><br> Атака: <b>{{ total_attack }}</b><br>
+            Защита: <b>{{ total_defence }}</b><br>
+            Примечание: в колонке 🐙 отображается свежий ли профиль у игрока.
+             </div>
+        <br>
+        <div class="container-fluid">
+            <div class="table-responsive">
+                <table border="2" class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th>Юзернейм</th>
+                        <th>Ник в игре</th>
+                        <th>Лвл</th>
+                        <th>🐙</th>
+                        <th>Класс</th>
+                        <th>Атк</th>
+                        <th>Зщт</th>
+                        <th>Пр. рука</th>
+                        <th>Л. рука</th>
+                        <th>Шлем</th>
+                        <th>Перчатки</th>
+                        <th>Броня</th>
+                        <th>Сапоги</th>
+                        <th>Особое</th>
+                        <th>Питомец</th>
+                        <th>Примечания</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for character, user, equip, fresh in members %}
+                        <tr>
+                            <td><a href="/player/{{ user.id }}">@{{ user.username }}</a></td>
+                            <td>{{ character.name }}</td>
+                            <td>{{ character.level }}</td>
+                            <td>{{ fresh }}</td>
+                            <td>{{ character.prof }}</td>
+                            <td>{{ character.attack }}</td>
+                            <td>{{ character.defence }}</td>
+                            {% for item, color in equip %}
+                                {% if color %}
+                                    <td bgcolor="{{ color }}">{{ item }}</td>
+                                {% else %}
+                                    <td>{{ item }}</td>
+                                {% endif %}
+                            {% endfor %}
+                            {% if character.pet %}
+                                <td>{{ character.pet }} : {{ character.petLevel }}</td>
+                            {% else %}
+                                <td></td>
+                            {% endif %}
+                            <td></td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}
