@@ -24,9 +24,9 @@
         <th>Название отряда</th>
     <tr/>
     </thead>
-  {% for v in output %}
+  {% for squad in output %}
       <tr>
-      <td><div>{{ v }}</div></td>
+      <td><div><a href="/member-equip/{{ squad.chat_id }}">{{ squad.squad_name }}</a></div></td>
       </tr>
   {% endfor %}
     </table>

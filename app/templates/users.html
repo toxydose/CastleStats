@@ -35,7 +35,7 @@
                                 <div>
                                     <a href="/player/{{ user.id }}">{{ character.name }}</a>
                                 </div>
-                            <td>{{ user }}</td>
+                            <td>{{ user|string|truncate(42, True) }}</td>
                             <td>@{{ user.username }}</td>
                         </tr>
                     {% endfor %}
