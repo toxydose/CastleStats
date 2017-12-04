@@ -50,7 +50,7 @@ def requires_auth(f):
     return decorated
 
 
-@app.route('/token=<token>', methods=['GET'])
+@app.route('/?token=<token>', methods=['GET'])
 def set_token(token):
     session = Session()
     users = session.query(User.username, Auth.id).group_by(User.id).join(Auth, Auth.user_id == User.id).filter_by(id=Auth.id)
@@ -59,9 +59,23 @@ def set_token(token):
     return user[0]
 
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def index():
-    return render_template("index.html")
+    if 'token' in request.args:
+        print(request.args)
+        token = request.args.getlist('token')
+        session = Session()
+        users = session.query(User.username, Auth.id).group_by(User.id).join(Auth, Auth.user_id == User.id).filter_by(
+            id=Auth.id)
+        user = users.filter_by(id=token).first()
+        return render_template("index.html", user=user[0])
+    else:
+        return render_template('403.html')
+
+
+@app.route('/403')
+def not_authorized():
+    return render_template('403.html')
 
 
 @app.route('/robots.txt')
