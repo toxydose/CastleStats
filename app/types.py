@@ -5,7 +5,7 @@ import logging
 
 from sqlalchemy import (
     create_engine,
-    Column, Integer, DateTime, Boolean, ForeignKey, UnicodeText, BigInteger
+    Column, Integer, DateTime, Boolean, ForeignKey, UnicodeText, BigInteger, Text
 )
 from sqlalchemy.dialects.mysql import DATETIME
 from sqlalchemy.ext.declarative import declarative_base
@@ -292,6 +292,65 @@ class Ban(Base):
     reason = Column(UnicodeText(2500))
     from_date = Column(DATETIME(fsp=6))
     to_date = Column(DATETIME(fsp=6))
+
+
+class Log(Base):
+    __tablename__ = 'log'
+
+    id = Column(BigInteger, autoincrement=True, primary_key=True)
+    user_id = Column(BigInteger, ForeignKey(User.id))
+    chat_id = Column(BigInteger)
+    date = Column(DATETIME(fsp=6))
+    func_name = Column(UnicodeText(2500))
+    args = Column(UnicodeText(2500))
+
+
+class Auth(Base):
+    __tablename__ = 'auth'
+
+    id = Column(Text(length=32))
+    user_id = Column(BigInteger, ForeignKey(User.id), primary_key=True)
+
+
+def check_admin(update, session, adm_type):
+    allowed = False
+    if adm_type == AdminType.NOT_ADMIN:
+        allowed = True
+    else:
+        admins = session.query(Admin).filter_by(user_id=update.message.from_user.id).all()
+        for adm in admins:
+            if adm is not None and adm.admin_type <= adm_type.value and \
+                    (adm.admin_group in [0, update.message.chat.id] or
+                     update.message.chat.id == update.message.from_user.id):
+                if adm.admin_group != 0:
+                    group = session.query(Group).filter_by(id=adm.admin_group).first()
+                    if group and group.bot_in_group:
+                        allowed = True
+                        break
+                else:
+                    allowed = True
+                    break
+    return allowed
+
+
+def check_ban(update, session):
+    ban = session.query(Ban).filter_by(user_id=update.message.from_user.id
+                                       if update.message else update.callback_query.from_user.id).first()
+    if ban is None or ban.to_date < datetime.now():
+        return True
+    else:
+        return False
+
+
+def log(session, user_id, chat_id, func_name, args):
+    log_item = Log()
+    log_item.date = datetime.now()
+    log_item.user_id = user_id
+    log_item.chat_id = chat_id
+    log_item.func_name = func_name
+    log_item.args = args
+    session.add(log_item)
+    session.commit()
 
 
 Base.metadata.create_all(ENGINE)
