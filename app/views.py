@@ -61,16 +61,19 @@ def set_token(token):
 
 @app.route('/', methods=['GET'])
 def index():
+    session = Session()
     if 'token' in request.args:
-        print(request.args)
         token = request.args.getlist('token')
-        session = Session()
-        users = session.query(User.username, Auth.id).group_by(User.id).join(Auth, Auth.user_id == User.id).filter_by(
-            id=Auth.id)
-        user = users.filter_by(id=token).first()
-        return render_template("index.html", user=user[0])
-    else:
-        return render_template('403.html')
+        auth = session.query(Auth).filter(Auth.id == token).first()
+        if auth:
+            session.delete(auth)
+            session.commit()
+            flask_session['user_id'] = auth.user_id
+    if 'user_id' in flask_session:
+        user = session.query(User).filter(User.id == flask_session['user_id']).first()
+        if user:
+            return render_template("index.html", user=user.username)
+    return render_template('403.html')
 
 
 @app.route('/403')
