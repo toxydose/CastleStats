@@ -50,15 +50,6 @@ def requires_auth(f):
     return decorated
 
 
-@app.route('/?token=<token>', methods=['GET'])
-def set_token(token):
-    session = Session()
-    users = session.query(User.username, Auth.id).group_by(User.id).join(Auth, Auth.user_id == User.id).filter_by(id=Auth.id)
-    user = users.filter_by(id=token).first()
-    print(user)
-    return user[0]
-
-
 @app.route('/', methods=['GET'])
 def index():
     session = Session()
