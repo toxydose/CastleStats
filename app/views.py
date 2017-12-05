@@ -72,7 +72,7 @@ def index():
     if 'user_id' in flask_session:
         user = session.query(User).filter(User.id == flask_session['user_id']).first()
         if user:
-            return render_template("index.html", user=user[0])
+            return render_template("index.html", user=user.username)
     return render_template('403.html')
 
 
