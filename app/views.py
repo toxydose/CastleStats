@@ -130,74 +130,82 @@ def get_user(id):
 
 @app.route('/member-equip/<int:squad_id>', methods=['GET'])
 @requires_auth
-@requires_bauth
 def get_member_equip(squad_id):
     session = Session()
-    try:
-        sub_query_1 = session.query(Character.user_id, func.max(Character.date)).group_by(Character.user_id).subquery()
-        sub_query_2 = session.query(Equip.user_id, func.max(Equip.date)).group_by(Equip.user_id).subquery()
-        members = session.query(Character, User, Equip.equip) \
-            .filter(tuple_(Character.user_id, Character.date).in_(sub_query_1)) \
-            .join(User, User.id == Character.user_id) \
-            .outerjoin(Equip, User.id == Equip.user_id) \
-            .join(SquadMember, SquadMember.user_id == Character.user_id) \
-            .filter((tuple_(Equip.user_id, Equip.date).in_(sub_query_2)) | (Equip.user_id.is_(None))) \
-            .filter(SquadMember.squad_id == squad_id) \
-            .order_by(Character.level.desc())
+    id = flask_session['user_id']
+    admins = session.query(Admin).filter(Admin.user_id == id).first()
+    if admins:
+        where_admin = admins.admin_group
+        admin_type = admins.admin_type
+        if admin_type == 1 or where_admin == squad_id:
+            try:
+                sub_query_1 = session.query(Character.user_id, func.max(Character.date)).group_by(Character.user_id).subquery()
+                sub_query_2 = session.query(Equip.user_id, func.max(Equip.date)).group_by(Equip.user_id).subquery()
+                members = session.query(Character, User, Equip.equip) \
+                    .filter(tuple_(Character.user_id, Character.date).in_(sub_query_1)) \
+                    .join(User, User.id == Character.user_id) \
+                    .outerjoin(Equip, User.id == Equip.user_id) \
+                    .join(SquadMember, SquadMember.user_id == Character.user_id) \
+                    .filter((tuple_(Equip.user_id, Equip.date).in_(sub_query_2)) | (Equip.user_id.is_(None))) \
+                    .filter(SquadMember.squad_id == squad_id) \
+                    .order_by(Character.level.desc())
 
-        if CASTLE:
-            members = members.filter(Character.castle == CASTLE)
-        members = members.all()
+                if CASTLE:
+                    members = members.filter(Character.castle == CASTLE)
+                members = members.all()
 
-        members_new = []
-        total_attack = 0
-        total_defence = 0
-        total_lvl = 0
-        for character, user, equip in members:
-            member_equip = []
-            total_attack += character.attack
-            total_defence += character.defence
-            total_lvl += character.level
-            if equip:
-                equip_lines = equip.split('\n')
-                for part in EQUIP_PARTS:
-                    flag = False
-                    for item, grade, alias in STUFF[part]:
-                        for line in equip_lines:
-                            if item in line:
-                                mod_str = line.split(item)[0]
-                                if alias:
-                                    member_equip.append([mod_str + alias, COLORS[grade]])
-                                else:
-                                    member_equip.append([mod_str + item, COLORS[grade]])
-                                flag = True
-                                break
-                        if flag:
-                            break
-                    if not flag:
-                        member_equip.append([' ', None])
-            else:
-                member_equip = [[' ', None], [' ', None], [' ', None], [' ', None],
-                                [' ', None], [' ', None], [' ', None]]
+                members_new = []
+                total_attack = 0
+                total_defence = 0
+                total_lvl = 0
+                for character, user, equip in members:
+                    member_equip = []
+                    total_attack += character.attack
+                    total_defence += character.defence
+                    total_lvl += character.level
+                    if equip:
+                        equip_lines = equip.split('\n')
+                        for part in EQUIP_PARTS:
+                            flag = False
+                            for item, grade, alias in STUFF[part]:
+                                for line in equip_lines:
+                                    if item in line:
+                                        mod_str = line.split(item)[0]
+                                        if alias:
+                                            member_equip.append([mod_str + alias, COLORS[grade]])
+                                        else:
+                                            member_equip.append([mod_str + item, COLORS[grade]])
+                                        flag = True
+                                        break
+                                if flag:
+                                    break
+                            if not flag:
+                                member_equip.append([' ', None])
+                    else:
+                        member_equip = [[' ', None], [' ', None], [' ', None], [' ', None],
+                                        [' ', None], [' ', None], [' ', None]]
 
-            if character.date > (datetime.now() - timedelta(days=7)):
-                fresh = PROFILE_FRESH
-            else:
-                fresh = PROFILE_NOT_FRESH
-            members_new.append([character, user, member_equip, fresh])
+                    if character.date > (datetime.now() - timedelta(days=7)):
+                        fresh = PROFILE_FRESH
+                    else:
+                        fresh = PROFILE_NOT_FRESH
+                    members_new.append([character, user, member_equip, fresh])
 
-        if len(members) > 0:
-            avg_lvl = total_lvl/len(members)
+                if len(members) > 0:
+                    avg_lvl = total_lvl/len(members)
+                else:
+                    avg_lvl = 0
+                squad = session.query(Squad).filter(Squad.chat_id == squad_id)
+                squad = squad.first()
+                return render_template('squad_member_equip.html', members=members_new, squad=squad, avg_lvl=round(avg_lvl, 1),
+                                       total_attack=total_attack, total_defence=total_defence)
+            except SQLAlchemyError:
+                Session.rollback()
+                return flask.Response(status=400)
         else:
-            avg_lvl = 0
-        squad = session.query(Squad).filter(Squad.chat_id == squad_id)
-        squad = squad.first()
-        return render_template('squad_member_equip.html', members=members_new, squad=squad, avg_lvl=round(avg_lvl, 1),
-                               total_attack=total_attack, total_defence=total_defence)
-    except SQLAlchemyError:
-        Session.rollback()
-        return flask.Response(status=400)
-
+            return render_template('forbidden.html')
+    else:
+        return render_template('forbidden.html')
 
 @app.route('/squads')
 @requires_auth
