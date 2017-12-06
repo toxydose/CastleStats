@@ -133,7 +133,7 @@ def get_user(id):
 def get_member_equip(squad_id):
     session = Session()
     id = flask_session['user_id']
-    admins = session.query(Admin).filter(Admin.user_id == id).first()
+    admins = session.query(Admin).filter(Admin.user_id == id).order_by(Admin.admin_type).first()
     if admins:
         where_admin = admins.admin_group
         admin_type = admins.admin_type
