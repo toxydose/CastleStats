@@ -98,6 +98,7 @@ def get_squads():
 
 @app.route('/users')
 @requires_auth
+@requires_bauth
 def get_usernames():
     try:
         session = Session()
