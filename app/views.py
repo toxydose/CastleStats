@@ -137,7 +137,7 @@ def get_member_equip(squad_id):
     if admins:
         where_admin = admins.admin_group
         admin_type = admins.admin_type
-        if admin_type == 1 or where_admin == squad_id:
+        if admin_type == 0 or where_admin == squad_id:
             try:
                 sub_query_1 = session.query(Character.user_id, func.max(Character.date)).group_by(Character.user_id).subquery()
                 sub_query_2 = session.query(Equip.user_id, func.max(Equip.date)).group_by(Equip.user_id).subquery()
@@ -206,6 +206,7 @@ def get_member_equip(squad_id):
             return render_template('forbidden.html')
     else:
         return render_template('forbidden.html')
+
 
 @app.route('/squads')
 @requires_auth
