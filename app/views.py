@@ -1,5 +1,5 @@
 import flask
-from flask import render_template, session as flask_session, redirect
+from flask import render_template, session as flask_session
 from sqlalchemy import func, tuple_
 from sqlalchemy.exc import SQLAlchemyError
 
@@ -39,7 +39,7 @@ def authenticate():
         {'WWW-Authenticate': 'Basic realm="Login Required"'})
 
 
-def requires_auth(f):
+def requires_bauth(f):
     @wraps(f)
     def decorated(*args, **kwargs):
         auth = request.authorization
@@ -48,6 +48,16 @@ def requires_auth(f):
         return f(*args, **kwargs)
 
     return decorated
+
+
+def requires_auth(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if 'user_id' in flask_session:
+            return func(*args, **kwargs)
+        else:
+            return render_template('403.html')
+    return wrapper
 
 
 @app.route('/', methods=['GET'])
@@ -106,6 +116,7 @@ def get_usernames():
 
 
 @app.route('/player/<int:id>', methods=['GET'])
+@requires_auth
 def get_user(id):
     session = Session()
     try:
@@ -118,6 +129,7 @@ def get_user(id):
 
 @app.route('/member-equip/<int:squad_id>', methods=['GET'])
 @requires_auth
+@requires_bauth
 def get_member_equip(squad_id):
     session = Session()
     try:
@@ -187,25 +199,30 @@ def get_member_equip(squad_id):
 
 
 @app.route('/squads')
+@requires_auth
 def squads_function():
     return render_template('squads.html', output=get_squads())
 
 
 @app.route('/top')
+@requires_auth
 def top():
     return render_template('top.html', output=MSG_UNDER_CONSTRUCTION)
 
 
 @app.route('/build')
+@requires_auth
 def build():
     return render_template('build.html', output=MSG_UNDER_CONSTRUCTION)
 
 
 @app.route('/reports')
+@requires_auth
 def reports():
     return render_template('reports.html', output=MSG_UNDER_CONSTRUCTION)
 
 
 @app.route('/squad_craft')
+@requires_auth
 def squad_craft():
     return render_template('squad_craft.html', output=MSG_UNDER_CONSTRUCTION)
