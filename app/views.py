@@ -137,7 +137,7 @@ def get_member_equip(squad_id):
     if admins:
         where_admin = admins.admin_group
         admin_type = admins.admin_type
-        if admin_type == 0 or where_admin == squad_id:
+        if admin_type == 0 or admin_type == 1 or where_admin == squad_id:
             try:
                 sub_query_1 = session.query(Character.user_id, func.max(Character.date)).group_by(Character.user_id).subquery()
                 sub_query_2 = session.query(Equip.user_id, func.max(Equip.date)).group_by(Equip.user_id).subquery()
@@ -149,11 +149,9 @@ def get_member_equip(squad_id):
                     .filter((tuple_(Equip.user_id, Equip.date).in_(sub_query_2)) | (Equip.user_id.is_(None))) \
                     .filter(SquadMember.squad_id == squad_id) \
                     .order_by(Character.level.desc())
-
                 if CASTLE:
                     members = members.filter(Character.castle == CASTLE)
                 members = members.all()
-
                 members_new = []
                 total_attack = 0
                 total_defence = 0
