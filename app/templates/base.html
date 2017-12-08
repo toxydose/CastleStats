@@ -1,36 +1,59 @@
 <html>
-  <head>
-      <meta charset="utf-8">
-      <title>DuskStats</title>
+<head>
+    <meta charset="utf-8">
+    <title>DuskStats</title>
 
-      <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=0.9">
-
-      <!-- CDN BOOTSTRAP -->
-      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
-      <!-- ------------- -->
-  </head>
-  <body style="background: #fffeff">
-  <div>
-        <nav class="navbar navbar-expand-lg navbar-light bg-dark">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="/"><b><font color="#7fffd4">ВСумраке</font></b></a>
-                </div>
-                <div>
-                    <div class="input-group input-group-sm">
-                        <span class="input-group-addon" id="sizing-addon3">@</span>
-                        <input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon3">
-                    </div>
-                </div>
-                <div class="container">
-                    {% block buttons %}{% endblock %}
+    <meta name="viewport" content="width=device-width, shrink-to-fit=no, initial-scale=0.9">
+    <script
+            src="http://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous"></script>
+    <script
+            src="http://code.jquery.com/ui/1.12.1/jquery-ui.min.js"
+            integrity="sha256-VazP97ZCwtekAsvgPBSUwPFKdrwD3unUfSGVYrahUqU="
+            crossorigin="anonymous"></script>
+    <!-- CDN BOOTSTRAP -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css"
+          integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js"
+            integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ"
+            crossorigin="anonymous"></script>
+    <!-- ------------- -->
+    <script src="https://cdn.jsdelivr.net/npm/emojione@3.1.2/lib/js/emojione.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/emojione@3.1.2/extras/css/emojione.min.css"/>
+    <script>
+        $(document).ready(function () {
+            $(".container").each(function () {
+                var original = $(this).html();
+                // use .shortnameToImage if only converting shortnames (for slightly better performance)
+                emojione.emojiSize = 64;
+                var converted = emojione.toImage(original);
+                $(this).html(converted);
+            });
+        });
+    </script>
+</head>
+<body style="background: #fffeff">
+<div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/"><b><font color="#7fffd4">ВСумраке</font></b></a>
+            </div>
+            <div>
+                <div class="input-group input-group-sm">
+                    <span class="input-group-addon" id="sizing-addon3">@</span>
+                    <input type="text" class="form-control" placeholder="Username" aria-describedby="sizing-addon3">
                 </div>
             </div>
-        </nav>
-  <br>
-        {% block content %}{% endblock %}
-  </div>
+            <div class="container">
+                {% block buttons %}{% endblock %}
+            </div>
+        </div>
+    </nav>
+    <br>
+    {% block content %}{% endblock %}
+</div>
 <br>
-  </body>
+</body>
 </html>
