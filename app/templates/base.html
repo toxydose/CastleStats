@@ -26,6 +26,7 @@
             $(".container").each(function () {
                 var original = $(this).html();
                 // use .shortnameToImage if only converting shortnames (for slightly better performance)
+                emojione.emojiSize = 64;
                 var converted = emojione.toImage(original);
                 $(this).html(converted);
             });
