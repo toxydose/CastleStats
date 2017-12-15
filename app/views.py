@@ -62,19 +62,23 @@ def requires_auth(func):
 
 @app.route('/', methods=['GET'])
 def index():
-    session = Session()
-    if 'token' in request.args:
-        token = request.args.getlist('token')
-        auth = session.query(Auth).filter(Auth.id == token).first()
-        if auth:
-            session.delete(auth)
-            session.commit()
-            flask_session['user_id'] = auth.user_id
-    if 'user_id' in flask_session:
-        user = session.query(User).filter(User.id == flask_session['user_id']).first()
-        if user:
-            return render_template("index.html", user=user.username)
-    return render_template('403.html')
+    try:
+        session = Session()
+        if 'token' in request.args:
+            token = request.args.getlist('token')
+            auth = session.query(Auth).filter(Auth.id == token).first()
+            if auth:
+                session.delete(auth)
+                session.commit()
+                flask_session['user_id'] = auth.user_id
+        if 'user_id' in flask_session:
+            user = session.query(User).filter(User.id == flask_session['user_id']).first()
+            if user:
+                return render_template("index.html", user=user.username)
+        return render_template('403.html')
+    except SQLAlchemyError:
+        Session.rollback()
+        return flask.Response(status=400)
 
 
 @app.route('/403')
@@ -132,82 +136,86 @@ def get_user(id):
 @requires_auth
 def get_member_equip(squad_id):
     allowed = False
-    session = Session()
-    id = flask_session['user_id']
-    admins = session.query(Admin).filter(Admin.user_id == id).order_by(Admin.admin_type).all()
-    for adm in admins:
-        where_admin = adm.admin_group
-        admin_type = adm.admin_type
-        if admin_type == 0 or admin_type == 1:
-            allowed = True
-        else:
-            if where_admin == squad_id:
+    try:
+        session = Session()
+        id = flask_session['user_id']
+        admins = session.query(Admin).filter(Admin.user_id == id).order_by(Admin.admin_type).all()
+        for adm in admins:
+            where_admin = adm.admin_group
+            admin_type = adm.admin_type
+            if admin_type == 0 or admin_type == 1:
                 allowed = True
-    if allowed:
-        try:
-            sub_query_1 = session.query(Character.user_id, func.max(Character.date)).group_by(Character.user_id).subquery()
-            sub_query_2 = session.query(Equip.user_id, func.max(Equip.date)).group_by(Equip.user_id).subquery()
-            members = session.query(Character, User, Equip.equip) \
-                .filter(tuple_(Character.user_id, Character.date).in_(sub_query_1)) \
-                .join(User, User.id == Character.user_id) \
-                .outerjoin(Equip, User.id == Equip.user_id) \
-                .join(SquadMember, SquadMember.user_id == Character.user_id) \
-                .filter((tuple_(Equip.user_id, Equip.date).in_(sub_query_2)) | (Equip.user_id.is_(None))) \
-                .filter(SquadMember.squad_id == squad_id) \
-                .order_by(Character.level.desc())
-            if CASTLE:
-                members = members.filter(Character.castle == CASTLE)
-            members = members.all()
-            members_new = []
-            total_attack = 0
-            total_defence = 0
-            total_lvl = 0
-            for character, user, equip in members:
-                member_equip = []
-                total_attack += character.attack
-                total_defence += character.defence
-                total_lvl += character.level
-                if equip:
-                    equip_lines = equip.split('\n')
-                    for part in EQUIP_PARTS:
-                        flag = False
-                        for item, grade, alias in STUFF[part]:
-                            for line in equip_lines:
-                                if item in line:
-                                    mod_str = line.split(item)[0]
-                                    if alias:
-                                        member_equip.append([mod_str + alias, COLORS[grade]])
-                                    else:
-                                        member_equip.append([mod_str + item, COLORS[grade]])
-                                    flag = True
-                                    break
-                            if flag:
-                                break
-                        if not flag:
-                            member_equip.append([' ', None])
-                else:
-                    member_equip = [[' ', None], [' ', None], [' ', None], [' ', None],
-                                    [' ', None], [' ', None], [' ', None]]
-
-                if character.date > (datetime.now() - timedelta(days=7)):
-                    fresh = PROFILE_FRESH
-                else:
-                    fresh = PROFILE_NOT_FRESH
-                members_new.append([character, user, member_equip, fresh])
-
-            if len(members) > 0:
-                avg_lvl = total_lvl/len(members)
             else:
-                avg_lvl = 0
-            squad = session.query(Squad).filter(Squad.chat_id == squad_id)
-            squad = squad.first()
-            return render_template('squad_member_equip.html', members=members_new, squad=squad, avg_lvl=round(avg_lvl, 1),
-                                   total_attack=total_attack, total_defence=total_defence)
-        except SQLAlchemyError:
-            Session.rollback()
-            return flask.Response(status=400)
-    else:
-        return render_template('forbidden.html')
+                if where_admin == squad_id:
+                    allowed = True
+        if allowed:
+            try:
+                sub_query_1 = session.query(Character.user_id, func.max(Character.date)).group_by(Character.user_id).subquery()
+                sub_query_2 = session.query(Equip.user_id, func.max(Equip.date)).group_by(Equip.user_id).subquery()
+                members = session.query(Character, User, Equip.equip) \
+                    .filter(tuple_(Character.user_id, Character.date).in_(sub_query_1)) \
+                    .join(User, User.id == Character.user_id) \
+                    .outerjoin(Equip, User.id == Equip.user_id) \
+                    .join(SquadMember, SquadMember.user_id == Character.user_id) \
+                    .filter((tuple_(Equip.user_id, Equip.date).in_(sub_query_2)) | (Equip.user_id.is_(None))) \
+                    .filter(SquadMember.squad_id == squad_id) \
+                    .order_by(Character.level.desc())
+                if CASTLE:
+                    members = members.filter(Character.castle == CASTLE)
+                members = members.all()
+                members_new = []
+                total_attack = 0
+                total_defence = 0
+                total_lvl = 0
+                for character, user, equip in members:
+                    member_equip = []
+                    total_attack += character.attack
+                    total_defence += character.defence
+                    total_lvl += character.level
+                    if equip:
+                        equip_lines = equip.split('\n')
+                        for part in EQUIP_PARTS:
+                            flag = False
+                            for item, grade, alias in STUFF[part]:
+                                for line in equip_lines:
+                                    if item in line:
+                                        mod_str = line.split(item)[0]
+                                        if alias:
+                                            member_equip.append([mod_str + alias, COLORS[grade]])
+                                        else:
+                                            member_equip.append([mod_str + item, COLORS[grade]])
+                                        flag = True
+                                        break
+                                if flag:
+                                    break
+                            if not flag:
+                                member_equip.append([' ', None])
+                    else:
+                        member_equip = [[' ', None], [' ', None], [' ', None], [' ', None],
+                                        [' ', None], [' ', None], [' ', None]]
+
+                    if character.date > (datetime.now() - timedelta(days=7)):
+                        fresh = PROFILE_FRESH
+                    else:
+                        fresh = PROFILE_NOT_FRESH
+                    members_new.append([character, user, member_equip, fresh])
+
+                if len(members) > 0:
+                    avg_lvl = total_lvl/len(members)
+                else:
+                    avg_lvl = 0
+                squad = session.query(Squad).filter(Squad.chat_id == squad_id)
+                squad = squad.first()
+                return render_template('squad_member_equip.html', members=members_new, squad=squad, avg_lvl=round(avg_lvl, 1),
+                                       total_attack=total_attack, total_defence=total_defence)
+            except SQLAlchemyError:
+                Session.rollback()
+                return flask.Response(status=400)
+        else:
+            return render_template('forbidden.html')
+    except SQLAlchemyError:
+        Session.rollback()
+        return flask.Response(status=400)
 
 
 @app.route('/squads')
