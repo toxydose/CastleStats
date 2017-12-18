@@ -93,7 +93,10 @@ def robots():
 
 def get_squads():
     try:
-        squads = Session().query(Squad).all()
+        all_squads = Session().query(Squad).join(SquadMember, SquadMember.squad_id == Squad.chat_id).all()
+        squads = []
+        for squad in all_squads:
+            squads.append(squad)
         return squads
     except SQLAlchemyError:
         Session.rollback()
