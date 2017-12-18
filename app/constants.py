@@ -71,7 +71,7 @@ COLORS = {'color_off': None,
           'grade2': 'f5cbcc',
           'grade3': 'fbe5cc',
           'grade4': 'd5ebd5',
-          'grade5': 'd9d2e9'
+          'grade5': '8ea671'
           }
 
 PROFILE_FRESH = '✓'
