@@ -67,7 +67,7 @@ EQUIP_PARTS = ['pri', 'sec', 'head', 'arms', 'armor', 'legs', 'special']
 
 COLORS = {'color_off': None,
           'grade0': None,
-          'grade1': 'e0ffff',
+          'grade1': 'f5f6f6',
           'grade2': 'f5cbcc',
           'grade3': 'fbe5cc',
           'grade4': 'd5ebd5',
