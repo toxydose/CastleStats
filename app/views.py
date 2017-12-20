@@ -249,3 +249,8 @@ def reports():
 @requires_auth
 def squad_craft():
     return render_template('squad_craft.html', output=MSG_UNDER_CONSTRUCTION)
+
+
+@app.route('/birja')
+def birja():
+    return  render_template('birja.html')
