@@ -6,7 +6,7 @@ STUFF = {'pri': [
                  ['Кирка шахтера', 'grade2', None], ['Кузнечный молот', 'grade3', None],
                  ['Молот гномов', 'grade3', None], ['Костолом', 'grade4', None],
                  ['Меч берсеркера', 'grade2', None], ['Экскалибур', 'grade3', None], ['Нарсил', 'grade4', None],
-                 ['Свет Луны', 'grade5', None], ['Черная Пика', 'grade5', None],
+                 ['Свет луны', 'grade5', None], ['Черная пика', 'grade5', None],
                  ['Хранитель', 'grade2', None], ['Трезубец', 'grade3', None], ['Алебарда', 'grade4', None]
                 ],
          'sec': [
