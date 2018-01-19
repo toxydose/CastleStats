@@ -253,4 +253,9 @@ def squad_craft():
 
 @app.route('/birja')
 def birja():
-    return  render_template('birja.html')
+    return render_template('birja.html')
+
+
+@app.route('/wrap')
+def wrap():
+    return render_template('wrap.html')
